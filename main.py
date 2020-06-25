@@ -1,9 +1,10 @@
 # variable declaration
 import sys
+
 hid_word = 'ironman'
 dashes = ['_'] * len(hid_word)
-chances = 10
-
+chances = 6
+cur_cnt=1
 
 def display_dashes():
     global dashes
@@ -12,20 +13,34 @@ def display_dashes():
 
 
 def get_move():
-    global hid_word, dashes, chances
-    letter = input("Enter a letter to guess : ")
+    global hid_word, dashes, chances , letter_input
+    global chance_label,present_label,dash_label,cur_cnt,hang_man_img , img
+    letter = letter_input.get()
     if len(letter) > 1:
-        print('Please enter only letters')
+        # print('Please enter only letters')
+        present_label['text']='Please enter only letters'
+        present_label.pack()
     else:
+        ans=''
         if letter in hid_word:
-            print('Guesssed letter present in word')
+            ans='Guesssed letter present in word'
             for x in range(len(hid_word)):
                 if letter == hid_word[x]:
                     dashes[x] = letter
         else:
-            print('guessed letter not in word')
+            ans='guessed letter not in word'
+            img=PhotoImage(file=f'hangman_pics/hangman_step{cur_cnt}.png')
+            hang_man_img['image']=img
+            hang_man_img.pack()
+            cur_cnt+=1
         # print(dashes)
         chances-=1
+        present_label['text']=ans
+        present_label.pack()
+        dash_label['text']=''.join([x+' ' for x in dashes])
+        dash_label.pack()
+        chance_label['text']="chances left : "+str(chances)
+        chance_label.pack()
         print("Chances left ",chances)
         check_win()
 
@@ -51,17 +66,57 @@ def check_win():
 
 
 
-print('\t\t\t Hangaman game')
-print('*'*50)
-display_dashes()
-print('')
-while(True):
-    get_move()
-    display_dashes()
-    print('')
+# print('\t\t\t Hangaman game')
+# print('*'*50)
+# display_dashes()
+# print('')
+# while(True):
+#     get_move()
+#     display_dashes()
+#     print('')
 
 # check_win()
 
+##################################
 
+from tkinter import Tk
+from tkinter import *
+from tkinter import font
+root=Tk()
+
+def print_letter():
+    global letter_input
+    print(letter_input.get())
+
+ff=font.Font(size='25')
+heading=Label(root,text="Hangman Game")
+heading.pack()
+heading['font']=ff
+f1=Frame(root)
+f2=Frame(root)
+f1.pack()
+f2.pack()
+img=PhotoImage(file='C:\\Users\\Balarubinan\\PycharmProjects\\Hangman_game\\hangman_pics\\hangman_step5.png')
+hang_man_img=Label(f1,image=img)
+hang_man_img.pack()
+hang_man_img['font']=ff
+dash_label=Label(f1,text='_ '*7)
+dash_label.pack()
+dash_label['font']=ff
+chance_label=Label(f1,text='present')
+chance_label.pack()
+chance_label['font']=ff
+
+present_label=Label(f1,text='chances left is : 10')
+present_label.pack()
+present_label['font']=ff
+
+letter_input=Entry(f2)
+letter_input.grid(row=0,column=0)
+letter_input['font']=ff
+btn=Button(f2,text='Guess',command=get_move)
+btn.grid(row=0,column=1)
+btn['font']=ff
+root.mainloop()
 
 
